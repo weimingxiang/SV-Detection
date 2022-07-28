@@ -36,19 +36,19 @@ chr_list = sam_file.references
 chr_length = sam_file.lengths
 sam_file.close()
 hight = 224
-all_ins = torch.empty(0, 4, hight, hight)
-all_del = torch.empty(0, 4, hight, hight)
-all_n = torch.empty(0, 4, hight, hight)
+all_ins = torch.empty(0, 5, hight, hight)
+all_del = torch.empty(0, 5, hight, hight)
+all_n = torch.empty(0, 5, hight, hight)
 
 for chromosome, chr_len in zip(chr_list, chr_length):
     print(chromosome)
-    ins = torch.load(data_dir + 'image/' + chromosome + '/ins_cigar_new_img' + '.pt')
-    _del = torch.load(data_dir + 'image/' + chromosome + '/del_cigar_new_img' + '.pt')
-    n = torch.load(data_dir + 'image/' + chromosome + '/negative_cigar_new_img' + '.pt')
+    ins = torch.cat((torch.load(data_dir + 'image/' + chromosome + '/ins_cigar_new_img' + '.pt'), torch.load(data_dir + 'image/' + chromosome + '/ins_img' + '.pt')[:, 2:3, :, :]), 1)
+    _del = torch.cat((torch.load(data_dir + 'image/' + chromosome + '/del_cigar_new_img' + '.pt'), torch.load(data_dir + 'image/' + chromosome + '/del_img' + '.pt')[:, 2:3, :, :]), 1)
+    n = torch.cat((torch.load(data_dir + 'image/' + chromosome + '/negative_cigar_new_img' + '.pt'), torch.load(data_dir + 'image/' + chromosome + '/negative_img' + '.pt')[:, 2:3, :, :]), 1)
     all_ins = torch.cat((all_ins, ins), 0)
     all_del = torch.cat((all_del, _del), 0)
     all_n = torch.cat((all_n, n), 0)
 
-torch.save(all_ins, '/all_ins_img' + '.pt')
-torch.save(all_del, '/all_del_img' + '.pt')
-torch.save(all_n, '/all_n_img' + '.pt')
+torch.save(all_ins, 'all_ins_img' + '.pt')
+torch.save(all_del, 'all_del_img' + '.pt')
+torch.save(all_n, 'all_n_img' + '.pt')
