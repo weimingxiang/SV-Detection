@@ -9,9 +9,9 @@ print("loading data")
 
 # all_ins_img, all_del_img, all_n_img, all_ins_list, all_del_list, all_n_list = pool.imap(torch.load, [data_dir + '/all_ins_img' + '.pt', data_dir + '/all_del_img' + '.pt', data_dir + '/all_n_img' + '.pt', data_dir + '/all_ins_list' + '.pt', data_dir + '/all_del_list' + '.pt', data_dir + '/all_n_list' + '.pt'])
 
-all_ins_img = torch.load('/all_ins_img' + '.pt')
-all_del_img = torch.load('/all_del_img' + '.pt')
-all_n_img = torch.load('/all_n_img' + '.pt')
+all_ins_img = torch.load('all_ins_img' + '.pt')
+all_del_img = torch.load('all_del_img' + '.pt')
+all_n_img = torch.load('all_n_img' + '.pt')
 # all_ins_list = torch.load(data_dir + '/all_ins_list' + '.pt')
 # all_del_list = torch.load(data_dir + '/all_del_list' + '.pt')
 # all_n_list = torch.load(data_dir + '/all_n_list' + '.pt')
