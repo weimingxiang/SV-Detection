@@ -5,14 +5,12 @@ import os
 import random
 from PIL import Image
 import numpy as np
-from pudb import set_trace
 import argparse
 from glob import glob
 from bed2image import trans2img
 import torch
 import torchvision
 from multiprocessing import Pool, cpu_count
-import pysam
 import time
 import csv
 import codecs
@@ -151,13 +149,17 @@ def to_input_image_single(img): # todo
 class IdentifyDataset(torch.utils.data.Dataset):
     def __init__(self, path):
 
-        self.insfile_list = os.listdir("ins")
-        self.delfile_list = os.listdir("del")
+        self.insfile_list = os.listdir(path + "ins")
+        self.delfile_list = os.listdir(path + "del")
 
-        self.nfile_list = os.listdir("n")
+        self.nfile_list = os.listdir(path + "n")
         self.path = path
 
         self._len = len(self.insfile_list) + len(self.delfile_list) + len(self.nfile_list)
+        # self._len = len(self.insfile_list) + len(self.nfile_list)
+        # self._len = len(self.delfile_list) + len(self.nfile_list)
+
+
 
 
 
@@ -166,15 +168,18 @@ class IdentifyDataset(torch.utils.data.Dataset):
 
     def __getitem__(self, index):
         if index < len(self.insfile_list):
-            return torch.load("ins/" + self.insfile_list[index])
+            return torch.load(self.path + "ins/" + self.insfile_list[index])
         elif index < len(self.insfile_list) + len(self.delfile_list):
             index -= len(self.insfile_list)
-            return torch.load("del/" + self.delfile_list[index])
+            return torch.load(self.path + "del/" + self.delfile_list[index])
         else:
             index -= len(self.insfile_list) + len(self.delfile_list)
+            # index -= len(self.insfile_list)
+            # index -= len(self.delfile_list)
+
             # random.seed(index)
             # index = random.randrange(0, len(self.nfile_list))
-            return torch.load("n/" + self.nfile_list[index])
+            return torch.load(self.path + "n/" + self.nfile_list[index])
 
 
 
