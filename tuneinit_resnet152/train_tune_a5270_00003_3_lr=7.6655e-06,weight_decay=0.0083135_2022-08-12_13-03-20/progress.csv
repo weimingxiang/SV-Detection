@@ -1,0 +1,2 @@
+validation_mean,time_this_iter_s,done,timesteps_total,episodes_total,training_iteration,trial_id,experiment_id,date,timestamp,time_total_s,pid,hostname,node_ip,time_since_restore,timesteps_since_restore,iterations_since_restore
+0.2578125,3.5267763137817383,True,,,1,a5270_00003,173f466e2aa841d493d9ddaf377f9682,2022-08-12_13-03-27,1660280607,3.5267763137817383,128227,localhost.localdomain,192.168.249.74,3.5267763137817383,0,1
