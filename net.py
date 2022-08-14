@@ -12,10 +12,8 @@ import torch.distributions.multivariate_normal as mn
 from torch.utils.data import DataLoader, WeightedRandomSampler, Subset
 import torchvision
 import utilities as ut
-from pudb import set_trace
 from multiprocessing import Pool, cpu_count
 import random
-from transformers import AlbertModel
 from sklearn.metrics import classification_report
 
 class attention(nn.Module):
@@ -127,12 +125,14 @@ class IDENet(pl.LightningModule):
 
         self.path = path
 
-        conv2d_dim = [4, 3]
+        conv2d_dim = [4, 4, 3, 3]
         self.conv2ds = conv2ds_sequential(conv2d_dim)
 
-        self.resnet_model = torchvision.models.resnet50(pretrained=True) # [224, 224] -> 1000
+        # self.resnet_model = torchvision.models.resnet50(pretrained=True) # [224, 224] -> 1000
+        self.resnet_model = torch.load("/home/xwm/DeepSVFilter/code_BIBM/init_resnet152.pt") # [224, 224] -> 1000
 
-        full_dim = [1000, 768 * 2, 768, 384, 192, 96, 48, 24, 12, 6] # test
+
+        full_dim = [1000, 768, 384, 192, 96, 48, 24, 12, 6] # test
         self.classfication = resnet_attention_classfication(full_dim)
 
         self.softmax = nn.Sequential(
@@ -149,6 +149,8 @@ class IDENet(pl.LightningModule):
 
         x = self.conv2ds(x)
 
+
+
         # x1 = self.conv2ds(x1[:, 0:1, :, :]) # test
 
         x = self.resnet_model(x)
@@ -160,6 +162,7 @@ class IDENet(pl.LightningModule):
             elif y_item == 1:
                 y_t[i] = torch.tensor([0, 1, 0])
             else:
+                # y[i] = 1
                 y_t[i] = torch.tensor([0, 0, 1])
 
         y_hat = self.classfication(x)
@@ -253,7 +256,7 @@ class IDENet(pl.LightningModule):
         self.log('validation_2_pre', metric['2']['precision'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
         self.log('validation_2_re', metric['2']['recall'], on_step=False, on_epoch=True, prog_bar=True, logger=True)
 
-        # tune.report(validation_mean = torch.mean((y == y_hat).float()))
+        tune.report(validation_mean = metric['accuracy'])
 
 
     def test_step(self, batch, batch_idx):
@@ -275,7 +278,7 @@ class IDENet(pl.LightningModule):
         self.test_dataset= Subset(input_data, test_indices)
 
     def train_dataloader(self):
-        return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, pin_memory=True, num_workers=int(cpu_count()), prefetch_factor=10, shuffle=True) # sampler=self.wsampler)
+        return DataLoader(dataset=self.train_dataset, batch_size=self.batch_size, pin_memory=True, num_workers=int(cpu_count()), shuffle=True) # sampler=self.wsampler)
 
     def val_dataloader(self):
         return DataLoader(dataset=self.test_dataset, batch_size=self.batch_size, pin_memory=True, num_workers=int(cpu_count()))

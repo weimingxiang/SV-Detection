@@ -1,5 +1,4 @@
 import utilities as ut
-from pudb import set_trace
 import pandas as pd
 import random
 import numpy as np
@@ -12,7 +11,6 @@ import pytorch_lightning as pl
 from pytorch_lightning import seed_everything
 from pytorch_lightning.callbacks import ModelCheckpoint
 from multiprocessing import Pool, cpu_count
-import pysam
 import time
 import ray
 from ray import tune
@@ -22,38 +20,20 @@ from ray.tune.schedulers import ASHAScheduler, PopulationBasedTraining
 from ray.tune.suggest.hyperopt import HyperOptSearch
 from ray.tune.integration.pytorch_lightning import TuneReportCallback, \
     TuneReportCheckpointCallback
-import list2img
-from hyperopt import hp
-num_cuda = "0"
-os.environ["CUDA_VISIBLE_DEVICES"] = num_cuda
-my_label = "4channel_predict"
+
+model_name = "init_resnet152"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+my_label = "4channel_predict" + '_' + model_name
 seed_everything(2022)
 
 # data_dir = "../datasets/NA12878_PacBio_MtSinai/"
-data_dir = "/home/xwm/DeepSVFilter/datasets/NA12878_PacBio_MtSinai/"
+data_dir = "/home/xwm/DeepSVFilter/code_BIBM/"
 
 
-bam_path = data_dir + "sorted_final_merged.bam"
-
-ins_vcf_filename = data_dir + "insert_result_data.csv.vcf"
-del_vcf_filename = data_dir + "delete_result_data.csv.vcf"
-
-
-all_enforcement_refresh = 0
-position_enforcement_refresh = 0
-img_enforcement_refresh = 0
-sign_enforcement_refresh = 0 # attention
-cigar_enforcement_refresh = 0
-
-# get chr list
-sam_file = pysam.AlignmentFile(bam_path, "rb")
-chr_list = sam_file.references
-chr_length = sam_file.lengths
-sam_file.close()
 
 hight = 224
 
-logger = TensorBoardLogger(os.path.join("/home/xwm/DeepSVFilter/code", "channel_predict"), name=my_label)
+logger = TensorBoardLogger(os.path.join(data_dir, "channel_predict"), name=my_label)
 
 checkpoint_callback = ModelCheckpoint(
     dirpath="./checkpoints_predict/" + my_label,
@@ -75,7 +55,7 @@ checkpoint_callback = ModelCheckpoint(
 def main_train():
     config = {
         "lr": 7.1873e-06,
-        "batch_size": 14, # 14,
+        "batch_size": 118, # 14,
         "beta1": 0.9,
         "beta2": 0.999,
         'weight_decay': 0.0011615,
@@ -163,26 +143,26 @@ class MyStopper(tune.Stopper):
 #     return result["validation_mean"] <= 0.343
 
 def gan_tune(num_samples=-1, num_epochs=30, gpus_per_trial=1):
-    # config = {
-    #     "lr": tune.loguniform(1e-7, 1e-5),
-    #     "batch_size": 14,
-    #     "beta1": 0.9, # tune.uniform(0.895, 0.905),
-    #     "beta2": 0.999, # tune.uniform(0.9989, 0.9991),
-    #     'weight_decay': tune.uniform(0, 0.01),
-    #     # "conv2d_dim_stride": tune.lograndint(1, 6),
-    #     # "classfication_dim_stride": tune.lograndint(20, 700),
-    # }
     config = {
-        "batch_size": 14,
-        "beta1": 0.9,
-        "beta2": 0.999,
-        "lr": 7.187267009530772e-06,
-        "weight_decay": 0.0011614665567890423
-        # "classfication_dim_stride": 20, # no use
+        "lr": tune.loguniform(1e-8, 1e-4),
+        "batch_size": 64,
+        "beta1": 0.9, # tune.uniform(0.895, 0.905),
+        "beta2": 0.999, # tune.uniform(0.9989, 0.9991),
+        'weight_decay': tune.uniform(0, 0.01),
+        # "conv2d_dim_stride": tune.lograndint(1, 6),
+        # "classfication_dim_stride": tune.lograndint(20, 700),
     }
+    # config = {
+    #     "batch_size": 119,
+    #     "beta1": 0.9,
+    #     "beta2": 0.999,
+    #     "lr": 7.187267009530772e-06,
+    #     "weight_decay": 0.0011614665567890423
+    #     # "classfication_dim_stride": 20, # no use
+    # }
 
-    bayesopt = HyperOptSearch(config, metric="validation_mean", mode="max")
-    re_search_alg = Repeater(bayesopt, repeat=1)
+    # bayesopt = HyperOptSearch(config, metric="validation_mean", mode="max")
+    # re_search_alg = Repeater(bayesopt, repeat=1)
 
     scheduler = ASHAScheduler(
         max_t=num_epochs,
@@ -199,9 +179,9 @@ def gan_tune(num_samples=-1, num_epochs=30, gpus_per_trial=1):
             train_tune,
             num_epochs=num_epochs,
         ),
-        local_dir="/home/xwm/DeepSVFilter/code/",
+        local_dir=data_dir,
         resources_per_trial={
-            "cpu": 5,
+            "cpu": 4,
             "gpu": 1,
         },
         # stop = MyStopper("validation_mean", value = 0.343, epoch = 1),
@@ -212,15 +192,14 @@ def gan_tune(num_samples=-1, num_epochs=30, gpus_per_trial=1):
         scheduler=scheduler,
         progress_reporter=reporter,
         resume="AUTO",
-        search_alg=re_search_alg,
+        # search_alg=re_search_alg,
         max_failures = -1,
         reuse_actors = True,
-        # server_port = 60060,
-        name="tune" + num_cuda)
+        name="tune" + model_name)
 
 
 
-main_train()
+# main_train()
 # # ray.init(num_cpus=12, num_gpus=3)
-# ray.init()
-# gan_tune()
+ray.init()
+gan_tune()
