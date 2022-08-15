@@ -232,3 +232,120 @@ ray.tune.error.TuneError: Trial raised an exception. Traceback:
     self.padding, self.dilation, self.groups)
 RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB (GPU 0; 15.78 GiB total capacity; 13.44 GiB already allocated; 35.50 MiB free; 14.31 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
 
+Failure # 3 (occurred at 2022-08-14_17-57-34)
+Traceback (most recent call last):
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/trial_runner.py", line 886, in _process_trial
+    results = self.trial_executor.fetch_result(trial)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/ray_trial_executor.py", line 675, in fetch_result
+    result = ray.get(trial_future[0], timeout=DEFAULT_GET_TIMEOUT)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/_private/client_mode_hook.py", line 105, in wrapper
+    return func(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/worker.py", line 1763, in get
+    raise value.as_instanceof_cause()
+ray.exceptions.RayTaskError(TuneError): [36mray::ImplicitFunc.train()[39m (pid=141358, ip=192.168.249.74, repr=train_tune)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/trainable.py", line 319, in train
+    result = self.step()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/function_runner.py", line 381, in step
+    self._report_thread_runner_error(block=True)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/function_runner.py", line 532, in _report_thread_runner_error
+    ("Trial raised an exception. Traceback:\n{}".format(err_tb_str)
+ray.tune.error.TuneError: Trial raised an exception. Traceback:
+[36mray::ImplicitFunc.train()[39m (pid=141358, ip=192.168.249.74, repr=train_tune)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/function_runner.py", line 262, in run
+    self._entrypoint()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/function_runner.py", line 331, in entrypoint
+    self._status_reporter.get_checkpoint())
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/function_runner.py", line 600, in _trainable_func
+    output = fn()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/utils/trainable.py", line 371, in inner
+    trainable(config, **fn_kwargs)
+  File "train.py", line 114, in train_tune
+    trainer.fit(model)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 741, in fit
+    self._fit_impl, model, train_dataloaders, val_dataloaders, datamodule, ckpt_path
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 685, in _call_and_handle_interrupt
+    return trainer_fn(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 777, in _fit_impl
+    self._run(model, ckpt_path=ckpt_path)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 1199, in _run
+    self._dispatch()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 1279, in _dispatch
+    self.training_type_plugin.start_training(self)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/plugins/training_type/training_type_plugin.py", line 202, in start_training
+    self._results = trainer.run_stage()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 1289, in run_stage
+    return self._run_train()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/trainer/trainer.py", line 1319, in _run_train
+    self.fit_loop.run()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/base.py", line 145, in run
+    self.advance(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/fit_loop.py", line 234, in advance
+    self.epoch_loop.run(data_fetcher)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/base.py", line 145, in run
+    self.advance(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/epoch/training_epoch_loop.py", line 193, in advance
+    batch_output = self.batch_loop.run(batch, batch_idx)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/base.py", line 145, in run
+    self.advance(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/batch/training_batch_loop.py", line 88, in advance
+    outputs = self.optimizer_loop.run(split_batch, optimizers, batch_idx)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/base.py", line 145, in run
+    self.advance(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/optimization/optimizer_loop.py", line 219, in advance
+    self.optimizer_idx,
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/optimization/optimizer_loop.py", line 266, in _run_optimization
+    self._optimizer_step(optimizer, opt_idx, batch_idx, closure)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/optimization/optimizer_loop.py", line 386, in _optimizer_step
+    using_lbfgs=is_lbfgs,
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/core/lightning.py", line 1652, in optimizer_step
+    optimizer.step(closure=optimizer_closure)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/core/optimizer.py", line 164, in step
+    trainer.accelerator.optimizer_step(self._optimizer, self._optimizer_idx, closure, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/accelerators/accelerator.py", line 339, in optimizer_step
+    self.precision_plugin.optimizer_step(model, optimizer, opt_idx, closure, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/plugins/precision/precision_plugin.py", line 163, in optimizer_step
+    optimizer.step(closure=closure, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/optim/optimizer.py", line 88, in wrapper
+    return func(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/autograd/grad_mode.py", line 28, in decorate_context
+    return func(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/optim/adam.py", line 92, in step
+    loss = closure()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/plugins/precision/precision_plugin.py", line 148, in _wrap_closure
+    closure_result = closure()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/optimization/optimizer_loop.py", line 160, in __call__
+    self._result = self.closure(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/optimization/optimizer_loop.py", line 142, in closure
+    step_output = self._step_fn()
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/loops/optimization/optimizer_loop.py", line 435, in _training_step
+    training_step_output = self.trainer.accelerator.training_step(step_kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/accelerators/accelerator.py", line 219, in training_step
+    return self.training_type_plugin.training_step(*step_kwargs.values())
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/pytorch_lightning/plugins/training_type/training_type_plugin.py", line 213, in training_step
+    return self.model.training_step(*args, **kwargs)
+  File "/home/xwm/DeepSVFilter/code_BIBM/net.py", line 175, in training_step
+    loss, y, y_hat = self.training_validation_step(batch, batch_idx)
+  File "/home/xwm/DeepSVFilter/code_BIBM/net.py", line 156, in training_validation_step
+    x = self.resnet_model(x)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torchvision/models/resnet.py", line 249, in forward
+    return self._forward_impl(x)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torchvision/models/resnet.py", line 239, in _forward_impl
+    x = self.layer3(x)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/container.py", line 141, in forward
+    input = module(input)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torchvision/models/resnet.py", line 132, in forward
+    out = self.conv3(out)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/module.py", line 1102, in _call_impl
+    return forward_call(*input, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/conv.py", line 446, in forward
+    return self._conv_forward(input, self.weight, self.bias)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/torch/nn/modules/conv.py", line 443, in _conv_forward
+    self.padding, self.dilation, self.groups)
+RuntimeError: CUDA out of memory. Tried to allocate 50.00 MiB (GPU 0; 15.78 GiB total capacity; 13.44 GiB already allocated; 35.50 MiB free; 14.31 GiB reserved in total by PyTorch) If reserved memory is >> allocated memory try setting max_split_size_mb to avoid fragmentation.  See documentation for Memory Management and PYTORCH_CUDA_ALLOC_CONF
+
