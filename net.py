@@ -129,7 +129,7 @@ class IDENet(pl.LightningModule):
         self.conv2ds = conv2ds_sequential(conv2d_dim)
 
         # self.resnet_model = torchvision.models.resnet50(pretrained=True) # [224, 224] -> 1000
-        self.resnet_model = torch.load("/home/xwm/DeepSVFilter/code_BIBM/init_resnet152.pt") # [224, 224] -> 1000
+        self.resnet_model = torch.load("/home/xwm/DeepSVFilter/code_BIBM/init_mobilenet_v2.pt") # [224, 224] -> 1000
 
 
         full_dim = [1000, 768, 384, 192, 96, 48, 24, 12, 6] # test
