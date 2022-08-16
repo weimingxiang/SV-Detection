@@ -21,8 +21,8 @@ from ray.tune.suggest.hyperopt import HyperOptSearch
 from ray.tune.integration.pytorch_lightning import TuneReportCallback, \
     TuneReportCheckpointCallback
 
-model_name = "init_mobilenet_v2"
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+model_name = "init_mnasnet1_0"
+os.environ["CUDA_VISIBLE_DEVICES"] = "3"
 my_label = "4channel_predict" + '_' + model_name
 seed_everything(2022)
 
@@ -191,7 +191,7 @@ def gan_tune(num_samples=-1, num_epochs=40, gpus_per_trial=1):
         mode='max',
         scheduler=scheduler,
         progress_reporter=reporter,
-        resume=False,
+        resume="AUTO",
         # search_alg=re_search_alg,
         max_failures = -1,
         reuse_actors = True,

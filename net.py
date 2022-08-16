@@ -129,7 +129,7 @@ class IDENet(pl.LightningModule):
         self.conv2ds = conv2ds_sequential(conv2d_dim)
 
         # self.resnet_model = torchvision.models.resnet50(pretrained=True) # [224, 224] -> 1000
-        self.resnet_model = torch.load("/home/xwm/DeepSVFilter/code_BIBM/init_mobilenet_v2.pt") # [224, 224] -> 1000
+        self.resnet_model = torch.load("/home/xwm/DeepSVFilter/code_BIBM/init_mnasnet1_0.pt") # [224, 224] -> 1000
 
 
         full_dim = [1000, 768, 384, 192, 96, 48, 24, 12, 6] # test
@@ -260,10 +260,17 @@ class IDENet(pl.LightningModule):
 
 
     def test_step(self, batch, batch_idx):
-        return self.validation_step(batch, batch_idx)
+        loss, y, y_hat = self.training_validation_step(batch, batch_idx)
+
+        # logs metrics for each training_step,
+        # and the average across the epoch, to the progress bar and logger
+        self.log('validation_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        # set_trace()
+
+        return {'y': y, 'y_hat' : y_hat}
 
     def test_epoch_end(self, output):
-        self.validation_epoch_end(output)
+        torch.save(output, "test_output.pt")
 
     def prepare_data(self):
         train_proportion = 0.8
