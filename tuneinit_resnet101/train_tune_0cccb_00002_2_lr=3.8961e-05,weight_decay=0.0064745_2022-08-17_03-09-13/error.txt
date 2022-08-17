@@ -1,0 +1,18 @@
+Failure # 1 (occurred at 2022-08-17_09-52-10)
+Traceback (most recent call last):
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/trial_runner.py", line 886, in _process_trial
+    results = self.trial_executor.fetch_result(trial)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/tune/ray_trial_executor.py", line 675, in fetch_result
+    result = ray.get(trial_future[0], timeout=DEFAULT_GET_TIMEOUT)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/_private/client_mode_hook.py", line 105, in wrapper
+    return func(*args, **kwargs)
+  File "/home/xwm/anaconda3/envs/SV/lib/python3.6/site-packages/ray/worker.py", line 1765, in get
+    raise value
+ray.exceptions.RayActorError: The actor died unexpectedly before finishing this task.
+	class_name: ImplicitFunc
+	actor_id: a7a106ed1b7deec7542317ed01000000
+	pid: 68326
+	namespace: 6e866538-2bdf-49bb-94be-2d5049bcd348
+	ip: 192.168.249.74
+The actor is dead because its worker process has died. Worker exit type: SYSTEM_ERROR_EXIT
+
